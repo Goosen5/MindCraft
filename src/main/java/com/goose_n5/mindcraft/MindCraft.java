@@ -1,9 +1,12 @@
 package com.goose_n5.mindcraft;
 
+import com.goose_n5.mindcraft.event.KeybindManager;
 import net.fabricmc.api.ModInitializer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.security.Key;
 
 public class MindCraft implements ModInitializer {
 	public static final String MOD_ID = "mindcraft";
@@ -18,6 +21,9 @@ public class MindCraft implements ModInitializer {
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
+
+		KeybindManager.register();
+		KeybindManager.registerKeyInputs();
 
 		LOGGER.info("Hello Fabric world!");
 	}

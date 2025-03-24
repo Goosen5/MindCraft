@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import org.lwjgl.glfw.GLFW;
 
 public class KeybindManager {
     public static final String KEYBIND_CATEGORY = "key.category.mindcraft";
@@ -22,7 +23,9 @@ public class KeybindManager {
     public static void register() {
         openGui = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 KEYBIND_OPEN_GUI,
-                InputUtil.Type.GLFW.GLFW_KEY_G,
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_K,
+                KEYBIND_CATEGORY
         ));
     }
 }
