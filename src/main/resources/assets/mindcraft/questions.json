@@ -1,0 +1,152 @@
+[
+  {
+    "question": "Who is the main protagonist of 'Attack on Titan'?",
+    "answers": ["Levi Ackerman", "Eren Yeager", "Armin Arlert"],
+    "correct": 1
+  },
+  {
+    "question": "Which anime features a notebook that can kill anyone whose name is written in it?",
+    "answers": ["Death Note", "Tokyo Ghoul", "Parasyte"],
+    "correct": 0
+  },
+  {
+    "question": "Who is the author of 'Shadow Slave'?",
+    "answers": ["J.K. Rowling", "Gugugu", "Cuttlefish That Loves Diving"],
+    "correct": 1
+  },
+  {
+    "question": "What is the name of the village Naruto Uzumaki is from?",
+    "answers": ["Sunagakure", "Kumogakure", "Konohagakure"],
+    "correct": 2
+  },
+  {
+    "question": "Which video game franchise features a hero named Link?",
+    "answers": ["The Legend of Zelda", "Final Fantasy", "Elder Scrolls"],
+    "correct": 0
+  },
+  {
+    "question": "What is the currency used in the game 'The Witcher 3'?",
+    "answers": ["Gold", "Crowns", "Septims"],
+    "correct": 1
+  },
+  {
+    "question": "Who is the main antagonist of 'Dragon Ball Z'?",
+    "answers": ["Frieza", "Cell", "Majin Buu"],
+    "correct": 0
+  },
+  {
+    "question": "What is the name of the first Pokémon ever created?",
+    "answers": ["Pikachu", "Rhydon", "Bulbasaur"],
+    "correct": 1
+  },
+  {
+    "question": "In 'Shadow Slave', what is the main ability of Sunny?",
+    "answers": ["Shadow Control", "Fire Manipulation", "Flight"],
+    "correct": 0
+  },
+  {
+    "question": "Which game studio developed 'Dark Souls'?",
+    "answers": ["CD Projekt Red", "FromSoftware", "Bethesda"],
+    "correct": 1
+  },
+  {
+    "question": "What is the highest-grossing anime movie of all time?",
+    "answers": ["Your Name", "Spirited Away", "Demon Slayer: Mugen Train"],
+    "correct": 2
+  },
+  {
+    "question": "Who is the captain of the Straw Hat Pirates in 'One Piece'?",
+    "answers": ["Roronoa Zoro", "Monkey D. Luffy", "Sanji"],
+    "correct": 1
+  },
+  {
+    "question": "What is the main theme of 'Neon Genesis Evangelion'?",
+    "answers": ["Mecha Battles", "Psychological Trauma", "Space Exploration"],
+    "correct": 1
+  },
+  {
+    "question": "In 'Final Fantasy VII', what is the name of the main antagonist?",
+    "answers": ["Sephiroth", "Kefka", "Ardyn"],
+    "correct": 0
+  },
+  {
+    "question": "Which anime features a character named 'Guts'?",
+    "answers": ["Berserk", "Claymore", "Vinland Saga"],
+    "correct": 0
+  },
+  {
+    "question": "In 'Shadow Slave', what is the name of Sunny's shadow?",
+    "answers": ["Mordret", "Nephis", "Saint"],
+    "correct": 2
+  },
+  {
+    "question": "Which country is known for creating the anime industry?",
+    "answers": ["China", "Japan", "South Korea"],
+    "correct": 1
+  },
+  {
+    "question": "What is the name of the protagonist in 'Persona 5'?",
+    "answers": ["Joker", "Cloud", "Noctis"],
+    "correct": 0
+  },
+  {
+    "question": "Which anime is about a young boy who dreams of becoming the Pirate King?",
+    "answers": ["Bleach", "Naruto", "One Piece"],
+    "correct": 2
+  },
+  {
+    "question": "Who is the strongest hero in 'One Punch Man'?",
+    "answers": ["Genos", "Bang", "Saitama"],
+    "correct": 2
+  },
+  {
+    "question": "Which game features a character named Geralt of Rivia?",
+    "answers": ["The Elder Scrolls", "The Witcher", "Dragon Age"],
+    "correct": 1
+  },
+  {
+    "question": "In 'Tokyo Ghoul', what is the main character's name?",
+    "answers": ["Ken Kaneki", "Touka Kirishima", "Yamori"],
+    "correct": 0
+  },
+  {
+    "question": "Which anime features a protagonist who can manipulate time?",
+    "answers": ["Steins;Gate", "Re:Zero", "Both"],
+    "correct": 2
+  },
+  {
+    "question": "What is the name of the main world in 'Genshin Impact'?",
+    "answers": ["Teyvat", "Mondstadt", "Inazuma"],
+    "correct": 0
+  },
+  {
+    "question": "Who is the writer of 'Berserk'?",
+    "answers": ["Kentaro Miura", "Eiichiro Oda", "Hajime Isayama"],
+    "correct": 0
+  },
+  {
+    "question": "In 'Shadow Slave', what is Nephis' title?",
+    "answers": ["Flame Empress", "Nightmare Queen", "Demon Princess"],
+    "correct": 0
+  },
+  {
+    "question": "Which anime has a character named Killua Zoldyck?",
+    "answers": ["Naruto", "Hunter x Hunter", "Bleach"],
+    "correct": 1
+  },
+  {
+    "question": "What is the name of the final boss in 'Dark Souls 3'?",
+    "answers": ["Abyss Watchers", "Soul of Cinder", "Nameless King"],
+    "correct": 1
+  },
+  {
+    "question": "Which light novel features a protagonist who reincarnates as a slime?",
+    "answers": ["Mushoku Tensei", "Overlord", "That Time I Got Reincarnated as a Slime"],
+    "correct": 2
+  },
+  {
+    "question": "From wich anime is the 100 floor castle 'Aincrad'?",
+    "answers": ["Sword Art Online", "Overlord", "Goblin Slayer"],
+    "correct":0
+  }
+]
