@@ -24,6 +24,8 @@ public class MindCraftScreen extends Screen {
     private static boolean isCooldownActive = false;
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
+    private List<String> rewards;
+
     private Screen parent;
     private List<Question> questions;
     private static int currentQuestionIndex = -1;
@@ -33,12 +35,44 @@ public class MindCraftScreen extends Screen {
         super(title);
         this.parent = parent;
         loadQuestions();
+        loadRewards();
         selectRandomQuestion();
         startCooldownChecker();
     }
 
+    private static class Question{
+        String question;
+        List<String> answers;
+        int correct;
+    }
+
+    private void loadQuestions(){
+        Gson gson = new Gson();
+        Type rewardListType = new TypeToken<List<Question>>(){}.getType();
+        InputStreamReader reader = new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream("/assets/mindcraft/questions.json")));
+        questions = gson.fromJson(reader, rewardListType);
+    }
+
+    private void loadRewards(){
+        Gson gson = new Gson();
+        Type rewardListType = new TypeToken<List<String>>(){}.getType();
+        InputStreamReader reader = new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream("/assets/mindcraft/rewards.json")));
+        rewards = gson.fromJson(reader, rewardListType);
+    }
+
     private void selectRandomQuestion(){
         currentQuestionIndex = random.nextInt(questions.size());
+    }
+
+    public String selectRandomReward(){
+        return rewards.get(random.nextInt(rewards.size()));
+    }
+
+    public void giveReward(){
+        String reward = selectRandomReward();
+        MinecraftClient.getInstance().player.networkHandler.sendCommand("give @s " + reward);
+
+        MinecraftClient.getInstance().player.sendMessage(Text.literal("You have been rewarded with " + reward), false);
     }
 
     private void startCooldown(){
@@ -55,11 +89,7 @@ public class MindCraftScreen extends Screen {
         }, 0, 1, TimeUnit.SECONDS);
     }
 
-    private static class Question{
-        String question;
-        List<String> answers;
-        int correct;
-    }
+
 
     @Override
     protected void init() {
@@ -95,6 +125,7 @@ public class MindCraftScreen extends Screen {
 
         if (isCorrect){
             MinecraftClient.getInstance().player.sendMessage(Text.literal("Correct"), false);
+            giveReward();
         } else {
             MinecraftClient.getInstance().player.sendMessage(Text.literal("Incorrect"), false);
         }
@@ -110,13 +141,7 @@ public class MindCraftScreen extends Screen {
         context.drawText(this.textRenderer, questions.get(currentQuestionIndex).question, questionX, questionY, 0xFFFFFF, true);
     }
 
-    private void loadQuestions(){
-        Gson gson = new Gson();
-        Type rewardListType = new TypeToken<List<Question>>(){}.getType();
-        InputStreamReader reader = new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream("/assets/mindcraft/questions.json")));
-        questions = gson.fromJson(reader, rewardListType);
-        System.out.println(questions);
-    }
+
 
     @Override
     public void close() {
