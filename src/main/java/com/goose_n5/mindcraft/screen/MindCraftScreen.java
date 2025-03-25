@@ -4,22 +4,31 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class MindCraftScreen extends Screen {
 
     private Screen parent;
     private List<Question> questions;
+    private static int currentQuestionIndex = -1;
+    private final Random random = new Random();
 
     public MindCraftScreen(Text title ,Screen parent) {
         super(title);
         this.parent = parent;
         loadQuestions();
+        selectRandomQuestion();
+    }
+
+    private void selectRandomQuestion(){
+        currentQuestionIndex = random.nextInt(questions.size());
     }
 
     private static class Question{
@@ -30,15 +39,44 @@ public class MindCraftScreen extends Screen {
 
     @Override
     protected void init() {
+        int buttonWidth = 200;
+        int buttonHeight = 20;
+        int buttonX = (this.width - buttonWidth) / 2;
+        int buttonY = (this.height - buttonHeight) / 2;
+
+        ButtonWidget answerButton1 = ButtonWidget.builder(Text.literal(questions.get(currentQuestionIndex).answers.get(0)), button -> checkAnswer(0))
+                .dimensions(buttonX, buttonY, buttonWidth, buttonHeight)
+                .build();
+
+        ButtonWidget answerButton2 = ButtonWidget.builder(Text.literal(questions.get(currentQuestionIndex).answers.get(1)), button -> checkAnswer(1))
+                .dimensions(buttonX, buttonY + 30, buttonWidth, buttonHeight)
+                .build();
+
+        ButtonWidget answerButton3 = ButtonWidget.builder(Text.literal(questions.get(currentQuestionIndex).answers.get(2)), button -> checkAnswer(2))
+                .dimensions(buttonX, buttonY + 60, buttonWidth, buttonHeight)
+                .build();
+
+        this.addDrawableChild(answerButton1);
+        this.addDrawableChild(answerButton2);
+        this.addDrawableChild(answerButton3);
+    }
+
+    private void checkAnswer(int answer){
+        boolean isCorrect = (answer == questions.get(currentQuestionIndex).correct);
+
+        if (isCorrect){
+            System.out.println("Correct");
+        } else {
+            System.out.println("Incorrect");
+        }
     }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
-        int textX = (this.width - this.textRenderer.getWidth("Screen")) / 2;
-        int textY = (this.height - this.textRenderer.fontHeight) / 2;
-        context.drawText(this.textRenderer, "Screen", textX, textY, 0xFFFFFF, true);
-        System.out.println("Screen");
+        int questionX = (this.width - this.textRenderer.getWidth(questions.get(currentQuestionIndex).question)) / 2;
+        int questionY = (this.height - this.textRenderer.fontHeight) / 2 - 30;
+        context.drawText(this.textRenderer, questions.get(currentQuestionIndex).question, questionX, questionY, 0xFFFFFF, true);
     }
 
     private void loadQuestions(){
