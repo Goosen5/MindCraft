@@ -2,6 +2,7 @@ package com.goose_n5.mindcraft.screen;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -12,8 +13,16 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class MindCraftScreen extends Screen {
+
+    public static final int COOLDOWN_TIME = 3;
+    private static long cooldownEndTime = 0;
+    private static boolean isCooldownActive = false;
+    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     private Screen parent;
     private List<Question> questions;
@@ -25,10 +34,25 @@ public class MindCraftScreen extends Screen {
         this.parent = parent;
         loadQuestions();
         selectRandomQuestion();
+        startCooldownChecker();
     }
 
     private void selectRandomQuestion(){
         currentQuestionIndex = random.nextInt(questions.size());
+    }
+
+    private void startCooldown(){
+        isCooldownActive = true;
+        cooldownEndTime = System.currentTimeMillis() + COOLDOWN_TIME * 1000;
+    }
+
+    private void startCooldownChecker(){
+        scheduler.scheduleAtFixedRate(() -> {
+            if (isCooldownActive && System.currentTimeMillis() >= cooldownEndTime){
+                isCooldownActive = false;
+                MinecraftClient.getInstance().player.sendMessage(Text.literal("A new question is available"), false);
+            }
+        }, 0, 1, TimeUnit.SECONDS);
     }
 
     private static class Question{
@@ -62,13 +86,20 @@ public class MindCraftScreen extends Screen {
     }
 
     private void checkAnswer(int answer){
+        if (isCooldownActive){
+            MinecraftClient.getInstance().player.sendMessage(Text.literal("You need to wait before answering again"), false);
+            return;
+        }
+
         boolean isCorrect = (answer == questions.get(currentQuestionIndex).correct);
 
         if (isCorrect){
-            System.out.println("Correct");
+            MinecraftClient.getInstance().player.sendMessage(Text.literal("Correct"), false);
         } else {
-            System.out.println("Incorrect");
+            MinecraftClient.getInstance().player.sendMessage(Text.literal("Incorrect"), false);
         }
+
+        startCooldown();
     }
 
     @Override
