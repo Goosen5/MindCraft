@@ -6,8 +6,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -78,9 +81,12 @@ public class MindCraftScreen extends Screen {
 
     public void giveReward(){
         String reward = selectRandomReward();
-        MinecraftClient.getInstance().player.networkHandler.sendCommand("give @s " + reward);
+        String[] parts = reward.split(" ");
+        String itemName = parts[0];
+        int quantity = parts.length > 1 ? Integer.parseInt(parts[1]) : 1;
 
-        MinecraftClient.getInstance().player.sendMessage(Text.literal("You have been rewarded with " + reward), false);
+        ItemStack itemStack = new ItemStack(Registries.ITEM.get(new Identifier(itemName)), quantity);
+        MinecraftClient.getInstance().player.giveItemStack(itemStack);
     }
 
     private void startCooldown(){
