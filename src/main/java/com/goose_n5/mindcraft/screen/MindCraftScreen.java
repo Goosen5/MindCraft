@@ -7,6 +7,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MindCraftScreen extends Screen {
 
-    public static final int COOLDOWN_TIME = 3;
+    public static final int COOLDOWN_TIME = 180;
     private static long cooldownEndTime = 0;
     private static boolean isCooldownActive = false;
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -30,6 +31,13 @@ public class MindCraftScreen extends Screen {
     private List<Question> questions;
     private static int currentQuestionIndex = -1;
     private final Random random = new Random();
+
+    private static final int MESSAGE_DISPLAY_TIME = 3000;
+    private String message = "";
+    private long messageEndTime = 0;
+    private boolean newQuestionNeeded = true;
+
+
 
     public MindCraftScreen(Text title ,Screen parent) {
         super(title);
@@ -84,15 +92,26 @@ public class MindCraftScreen extends Screen {
         scheduler.scheduleAtFixedRate(() -> {
             if (isCooldownActive && System.currentTimeMillis() >= cooldownEndTime){
                 isCooldownActive = false;
+                newQuestionNeeded = true;
                 MinecraftClient.getInstance().player.sendMessage(Text.literal("A new question is available"), false);
             }
         }, 0, 1, TimeUnit.SECONDS);
+    }
+
+    private void setMessage(String message){
+        this.message = message;
+        this.messageEndTime = System.currentTimeMillis() + MESSAGE_DISPLAY_TIME;
     }
 
 
 
     @Override
     protected void init() {
+        if (newQuestionNeeded){
+            selectRandomQuestion();
+            newQuestionNeeded = false;
+        }
+
         int buttonWidth = 200;
         int buttonHeight = 20;
         int buttonX = (this.width - buttonWidth) / 2;
@@ -124,10 +143,10 @@ public class MindCraftScreen extends Screen {
         boolean isCorrect = (answer == questions.get(currentQuestionIndex).correct);
 
         if (isCorrect){
-            MinecraftClient.getInstance().player.sendMessage(Text.literal("Correct"), false);
+            setMessage("§a Correct");
             giveReward();
         } else {
-            MinecraftClient.getInstance().player.sendMessage(Text.literal("Incorrect"), false);
+            setMessage("§c Incorrect");
         }
 
         startCooldown();
@@ -136,9 +155,30 @@ public class MindCraftScreen extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
+
+        if (newQuestionNeeded){
+            return;
+        }
+
         int questionX = (this.width - this.textRenderer.getWidth(questions.get(currentQuestionIndex).question)) / 2;
         int questionY = (this.height - this.textRenderer.fontHeight) / 2 - 30;
         context.drawText(this.textRenderer, questions.get(currentQuestionIndex).question, questionX, questionY, 0xFFFFFF, true);
+
+        if (isCooldownActive){
+            long remainingTime = (cooldownEndTime - System.currentTimeMillis()) / 1000;
+            String cooldownText = "§c Cooldown: " + remainingTime + "s";
+            context.drawText(this.textRenderer, cooldownText, this.width - this.textRenderer.getWidth(cooldownText) - 10, 10, 0xFFFFFF, true);
+        }
+
+        if (System.currentTimeMillis() < messageEndTime){
+            int messageWidth = this.textRenderer.getWidth(message);
+            int messageX = (this.width - messageWidth) / 2;
+            int messageY = this.height / 2 -70;
+            context.drawText(this.textRenderer, Text.literal(message).formatted(Formatting.BOLD), messageX, messageY, 0xFFFFFF, true);
+        }else if (!message.isEmpty()){
+            message = "";
+            this.close();
+        }
     }
 
 
