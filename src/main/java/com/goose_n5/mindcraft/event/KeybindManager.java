@@ -50,7 +50,7 @@ public class KeybindManager {
         openGui = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 KEYBIND_OPEN_GUI,
                 InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_K,
+                GLFW.GLFW_KEY_M,
                 KEYBIND_CATEGORY
         ));
 
@@ -58,7 +58,7 @@ public class KeybindManager {
         openConfig = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 KEYBIND_OPEN_CONFIG,
                 InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_L,
+                GLFW.GLFW_KEY_C,
                 KEYBIND_CATEGORY
         ));
     }
