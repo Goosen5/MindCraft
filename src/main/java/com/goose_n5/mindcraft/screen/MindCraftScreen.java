@@ -2,6 +2,7 @@ package com.goose_n5.mindcraft.screen;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.goose_n5.mindcraft.MindCraft;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -12,7 +13,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Objects;
@@ -40,7 +41,11 @@ public class MindCraftScreen extends Screen {
     private long messageEndTime = 0;
     private boolean newQuestionNeeded = true;
 
-
+    private static class Question{
+        String question;
+        List<String> answers;
+        int correct;
+    }
 
     public MindCraftScreen(Text title ,Screen parent) {
         super(title);
@@ -51,17 +56,43 @@ public class MindCraftScreen extends Screen {
         startCooldownChecker();
     }
 
-    private static class Question{
-        String question;
-        List<String> answers;
-        int correct;
-    }
+
 
     private void loadQuestions(){
         Gson gson = new Gson();
         Type rewardListType = new TypeToken<List<Question>>(){}.getType();
-        InputStreamReader reader = new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream("/assets/mindcraft/questions.json")));
-        questions = gson.fromJson(reader, rewardListType);
+        File questionsFile = new File(MindCraft.CONFIG_DIR,"questions.json");
+
+        try (FileReader reader = new FileReader(questionsFile)) {
+            questions = gson.fromJson(reader, rewardListType);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void saveQuestions(){
+        Gson gson = new Gson();
+        File questionsFile = new File(MindCraft.CONFIG_DIR,"questions.json");
+
+        try (FileWriter writer = new FileWriter(questionsFile)) {
+            gson.toJson(questions, writer);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void addQuestion(Question question){
+        questions.add(question);
+        saveQuestions();
+    }
+
+    public void removeQuestion(int index){
+        if (index >= 0 && index < questions.size()){
+            questions.remove(index);
+            saveQuestions();
+        }
     }
 
     private void loadRewards(){
