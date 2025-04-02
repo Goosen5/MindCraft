@@ -1,6 +1,8 @@
 package com.goose_n5.mindcraft.screen;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.internal.GsonBuildConfig;
 import com.google.gson.reflect.TypeToken;
 import com.goose_n5.mindcraft.MindCraft;
 import net.minecraft.client.MinecraftClient;
@@ -32,7 +34,7 @@ public class MindCraftScreen extends Screen {
     private List<String> rewards;
 
     private Screen parent;
-    private List<Question> questions;
+    private static List<Question> questions;
     private static int currentQuestionIndex = -1;
     private final Random random = new Random();
 
@@ -41,10 +43,34 @@ public class MindCraftScreen extends Screen {
     private long messageEndTime = 0;
     private boolean newQuestionNeeded = true;
 
-    private static class Question{
+    public static class Question{
         String question;
         List<String> answers;
         int correct;
+
+        public String getQuestion() {
+            return question;
+        }
+
+        public int getCorrect() {
+            return correct;
+        }
+
+        public List<String> getAnswers() {
+            return answers;
+        }
+
+        public void setQuestion(String question) {
+            this.question = question;
+        }
+
+        public void setAnswers(List<String> answers) {
+            this.answers = answers;
+        }
+
+        public void setCorrect(int correct) {
+            this.correct = correct;
+        }
     }
 
     public MindCraftScreen(Text title ,Screen parent) {
@@ -58,7 +84,7 @@ public class MindCraftScreen extends Screen {
 
 
 
-    private void loadQuestions(){
+    static void loadQuestions(){
         Gson gson = new Gson();
         Type rewardListType = new TypeToken<List<Question>>(){}.getType();
         File questionsFile = new File(MindCraft.CONFIG_DIR,"questions.json");
@@ -72,8 +98,10 @@ public class MindCraftScreen extends Screen {
         }
     }
 
-    private void saveQuestions(){
-        Gson gson = new Gson();
+    static void saveQuestions(){
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        Gson gson = builder.create();
         File questionsFile = new File(MindCraft.CONFIG_DIR,"questions.json");
 
         try (FileWriter writer = new FileWriter(questionsFile)) {
@@ -218,7 +246,9 @@ public class MindCraftScreen extends Screen {
         }
     }
 
-
+    public static List<Question> getQuestions() {
+        return questions;
+    }
 
     @Override
     public void close() {
