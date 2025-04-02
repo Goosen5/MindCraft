@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.internal.GsonBuildConfig;
 import com.google.gson.reflect.TypeToken;
 import com.goose_n5.mindcraft.MindCraft;
+import com.goose_n5.mindcraft.screen.components.Question;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -43,35 +44,7 @@ public class MindCraftScreen extends Screen {
     private long messageEndTime = 0;
     private boolean newQuestionNeeded = true;
 
-    public static class Question{
-        String question;
-        List<String> answers;
-        int correct;
 
-        public String getQuestion() {
-            return question;
-        }
-
-        public int getCorrect() {
-            return correct;
-        }
-
-        public List<String> getAnswers() {
-            return answers;
-        }
-
-        public void setQuestion(String question) {
-            this.question = question;
-        }
-
-        public void setAnswers(List<String> answers) {
-            this.answers = answers;
-        }
-
-        public void setCorrect(int correct) {
-            this.correct = correct;
-        }
-    }
 
     public MindCraftScreen(Text title ,Screen parent) {
         super(title);
@@ -98,7 +71,7 @@ public class MindCraftScreen extends Screen {
         }
     }
 
-    static void saveQuestions(){
+    public static void saveQuestions(){
         GsonBuilder builder = new GsonBuilder();
         builder.setPrettyPrinting();
         Gson gson = builder.create();
@@ -182,15 +155,15 @@ public class MindCraftScreen extends Screen {
         int buttonX = (this.width - buttonWidth) / 2;
         int buttonY = (this.height - buttonHeight) / 2;
 
-        ButtonWidget answerButton1 = ButtonWidget.builder(Text.literal(questions.get(currentQuestionIndex).answers.get(0)), button -> checkAnswer(0))
+        ButtonWidget answerButton1 = ButtonWidget.builder(Text.literal(questions.get(currentQuestionIndex).getAnswers().get(0)), button -> checkAnswer(0))
                 .dimensions(buttonX, buttonY, buttonWidth, buttonHeight)
                 .build();
 
-        ButtonWidget answerButton2 = ButtonWidget.builder(Text.literal(questions.get(currentQuestionIndex).answers.get(1)), button -> checkAnswer(1))
+        ButtonWidget answerButton2 = ButtonWidget.builder(Text.literal(questions.get(currentQuestionIndex).getAnswers().get(1)), button -> checkAnswer(1))
                 .dimensions(buttonX, buttonY + 30, buttonWidth, buttonHeight)
                 .build();
 
-        ButtonWidget answerButton3 = ButtonWidget.builder(Text.literal(questions.get(currentQuestionIndex).answers.get(2)), button -> checkAnswer(2))
+        ButtonWidget answerButton3 = ButtonWidget.builder(Text.literal(questions.get(currentQuestionIndex).getAnswers().get(2)), button -> checkAnswer(2))
                 .dimensions(buttonX, buttonY + 60, buttonWidth, buttonHeight)
                 .build();
 
@@ -205,7 +178,7 @@ public class MindCraftScreen extends Screen {
             return;
         }
 
-        boolean isCorrect = (answer == questions.get(currentQuestionIndex).correct);
+        boolean isCorrect = (answer == questions.get(currentQuestionIndex).getCorrect());
 
         if (isCorrect){
             setMessage("§a Correct");
@@ -225,9 +198,9 @@ public class MindCraftScreen extends Screen {
             return;
         }
 
-        int questionX = (this.width - this.textRenderer.getWidth(questions.get(currentQuestionIndex).question)) / 2;
+        int questionX = (this.width - this.textRenderer.getWidth(questions.get(currentQuestionIndex).getQuestion())) / 2;
         int questionY = (this.height - this.textRenderer.fontHeight) / 2 - 30;
-        context.drawText(this.textRenderer, questions.get(currentQuestionIndex).question, questionX, questionY, 0xFFFFFF, true);
+        context.drawText(this.textRenderer, questions.get(currentQuestionIndex).getQuestion(), questionX, questionY, 0xFFFFFF, true);
 
         if (isCooldownActive){
             long remainingTime = (cooldownEndTime - System.currentTimeMillis()) / 1000;
