@@ -86,11 +86,21 @@ public class AddQuestionScreen extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
+
+        // Render the text fields
         questionField.render(context, mouseX, mouseY, delta);
         answerField1.render(context, mouseX, mouseY, delta);
         answerField2.render(context, mouseX, mouseY, delta);
         answerField3.render(context, mouseX, mouseY, delta);
         correctField.render(context, mouseX, mouseY, delta);
+
+        // Draw labels next to the text fields
+        context.drawText(this.textRenderer, "Question:", questionField.getX() - 80, questionField.getY() + 5, 0xFFFFFF, false);
+        context.drawText(this.textRenderer, "Answer 1:", answerField1.getX() - 80, answerField1.getY() + 5, 0xFFFFFF, false);
+        context.drawText(this.textRenderer, "Answer 2:", answerField2.getX() - 80, answerField2.getY() + 5, 0xFFFFFF, false);
+        context.drawText(this.textRenderer, "Answer 3:", answerField3.getX() - 80, answerField3.getY() + 5, 0xFFFFFF, false);
+        context.drawText(this.textRenderer, "Correct Answer:", correctField.getX() - 120, correctField.getY() + 5, 0xFFFFFF, false);
+
     }
 
     @Override
