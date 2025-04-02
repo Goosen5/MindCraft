@@ -25,6 +25,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+
+/**
+ * Screen for the MindCraft game.
+ */
 public class MindCraftScreen extends Screen {
 
     public static final int COOLDOWN_TIME = 180;
@@ -46,6 +50,12 @@ public class MindCraftScreen extends Screen {
 
 
 
+    /**
+     * Creates a new MindCraftScreen.
+     *
+     * @param title The title of the screen.
+     * @param parent The parent screen.
+     */
     public MindCraftScreen(Text title ,Screen parent) {
         super(title);
         this.parent = parent;
@@ -57,9 +67,12 @@ public class MindCraftScreen extends Screen {
 
 
 
+    /**
+     * Loads the questions from the questions.json file.
+     */
     static void loadQuestions(){
         Gson gson = new Gson();
-        Type rewardListType = new TypeToken<List<Question>>(){}.getType();
+        Type rewardListType = new TypeToken<List<Question>>(){}.getType(); // TypeToken is a class that represents a generic type.
         File questionsFile = new File(MindCraft.CONFIG_DIR,"questions.json");
 
         try (FileReader reader = new FileReader(questionsFile)) {
@@ -71,9 +84,12 @@ public class MindCraftScreen extends Screen {
         }
     }
 
+    /**
+     * Saves the questions to the questions.json file.
+     */
     public static void saveQuestions(){
         GsonBuilder builder = new GsonBuilder();
-        builder.setPrettyPrinting();
+        builder.setPrettyPrinting(); // Makes the JSON output more human-readable.
         Gson gson = builder.create();
         File questionsFile = new File(MindCraft.CONFIG_DIR,"questions.json");
 
@@ -84,11 +100,21 @@ public class MindCraftScreen extends Screen {
         }
     }
 
+    /**
+     * Adds a question to the list of questions.
+     *
+     * @param question The question to add.
+     */
     public void addQuestion(Question question){
         questions.add(question);
         saveQuestions();
     }
 
+    /**
+     * Removes a question from the list of questions.
+     *
+     * @param index The index of the question to remove.
+     */
     public void removeQuestion(int index){
         if (index >= 0 && index < questions.size()){
             questions.remove(index);
@@ -96,36 +122,58 @@ public class MindCraftScreen extends Screen {
         }
     }
 
+    /**
+     * Loads the rewards from the rewards.json file.
+     */
     private void loadRewards(){
         Gson gson = new Gson();
         Type rewardListType = new TypeToken<List<String>>(){}.getType();
+        // InputStreamReader is a bridge from byte streams to character streams.
         InputStreamReader reader = new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream("/assets/mindcraft/rewards.json")));
         rewards = gson.fromJson(reader, rewardListType);
     }
 
+    /**
+     * Selects a random question from the list of questions.
+     */
     private void selectRandomQuestion(){
         currentQuestionIndex = random.nextInt(questions.size());
     }
 
+    /**
+     * Selects a random reward from the list of rewards.
+     *
+     * @return The selected reward.
+     */
     public String selectRandomReward(){
         return rewards.get(random.nextInt(rewards.size()));
     }
 
+    /**
+     * Gives the player a reward.
+     */
     public void giveReward(){
         String reward = selectRandomReward();
         String[] parts = reward.split(" ");
         String itemName = parts[0];
-        int quantity = parts.length > 1 ? Integer.parseInt(parts[1]) : 1;
+        int quantity = parts.length > 1 ? Integer.parseInt(parts[1]) : 1; // If the reward has a quantity, parse it. Otherwise, default to 1.
 
+        // Create an ItemStack with the reward item and quantity.
         ItemStack itemStack = new ItemStack(Registries.ITEM.get(new Identifier(itemName)), quantity);
         MinecraftClient.getInstance().player.giveItemStack(itemStack);
     }
 
+    /**
+     * Starts the cooldown timer.
+     */
     private void startCooldown(){
         isCooldownActive = true;
         cooldownEndTime = System.currentTimeMillis() + COOLDOWN_TIME * 1000;
     }
 
+    /**
+     * Starts the cooldown checker.
+     */
     private void startCooldownChecker(){
         scheduler.scheduleAtFixedRate(() -> {
             if (isCooldownActive && System.currentTimeMillis() >= cooldownEndTime){
@@ -136,6 +184,11 @@ public class MindCraftScreen extends Screen {
         }, 0, 1, TimeUnit.SECONDS);
     }
 
+    /**
+     * Sets the message to display on the screen.
+     *
+     * @param message The message to display.
+     */
     private void setMessage(String message){
         this.message = message;
         this.messageEndTime = System.currentTimeMillis() + MESSAGE_DISPLAY_TIME;
@@ -172,6 +225,11 @@ public class MindCraftScreen extends Screen {
         this.addDrawableChild(answerButton3);
     }
 
+    /**
+     * Checks the player's answer.
+     *
+     * @param answer The player's answer.
+     */
     private void checkAnswer(int answer){
         if (isCooldownActive){
             MinecraftClient.getInstance().player.sendMessage(Text.literal("You need to wait before answering again"), false);
@@ -198,6 +256,7 @@ public class MindCraftScreen extends Screen {
             return;
         }
 
+        // Draw the question text in the center of the screen.
         int questionX = (this.width - this.textRenderer.getWidth(questions.get(currentQuestionIndex).getQuestion())) / 2;
         int questionY = (this.height - this.textRenderer.fontHeight) / 2 - 30;
         context.drawText(this.textRenderer, questions.get(currentQuestionIndex).getQuestion(), questionX, questionY, 0xFFFFFF, true);
@@ -208,6 +267,7 @@ public class MindCraftScreen extends Screen {
             context.drawText(this.textRenderer, cooldownText, this.width - this.textRenderer.getWidth(cooldownText) - 10, 10, 0xFFFFFF, true);
         }
 
+        // Draw the message in the center of the screen.
         if (System.currentTimeMillis() < messageEndTime){
             int messageWidth = this.textRenderer.getWidth(message);
             int messageX = (this.width - messageWidth) / 2;

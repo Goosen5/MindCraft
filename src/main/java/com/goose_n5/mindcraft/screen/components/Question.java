@@ -2,6 +2,9 @@ package com.goose_n5.mindcraft.screen.components;
 
 import java.util.List;
 
+/**
+ * Represents a question.
+ */
 public class Question{
     String question;
     List<String> answers;
